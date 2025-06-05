@@ -6,6 +6,25 @@ import base64
 import shutil
 from PIL import Image
 
+import sys
+import subprocess
+
+# Check and install system dependencies
+def install_ffmpeg():
+    try:
+        subprocess.run(["ffmpeg", "-version"], check=True, capture_output=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        try:
+            if sys.platform == "linux":
+                subprocess.run(["apt-get", "update"], check=True)
+                subprocess.run(["apt-get", "install", "-y", "ffmpeg"], check=True)
+            elif sys.platform == "darwin":
+                subprocess.run(["brew", "install", "ffmpeg"], check=True)
+        except Exception as e:
+            st.error(f"Failed to install FFmpeg: {str(e)}")
+
+install_ffmpeg()
+
 # Set page config
 st.set_page_config(page_title="Wav2Lip Demo", layout="wide")
 
